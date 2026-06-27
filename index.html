@@ -292,7 +292,6 @@
             margin-bottom: 16px;
             font-size: 22px;
             overflow: hidden;
-            /* 头像加载失败时的备用背景 */
             background: #e8f4fd;
             color: #0071e3;
         }
@@ -312,7 +311,6 @@
             background: #fff3e6;
             color: #ff9500;
         }
-        /* 作者头像专用 */
         .icon-circle.avatar-circle {
             background: transparent;
             padding: 0;
@@ -327,7 +325,6 @@
             position: relative;
             z-index: 1;
         }
-        /* 图片加载失败时显示的备用图标 */
         .icon-circle.avatar-circle .fallback-icon {
             position: absolute;
             inset: 0;
@@ -353,7 +350,7 @@
             line-height: 1.6;
         }
 
-        /* ========== 下载面板（垂直堆叠两张卡片） ========== */
+        /* ========== 下载面板 ========== */
         .download-panel-content {
             display: flex;
             flex-direction: column;
@@ -568,7 +565,7 @@
 </head>
 <body>
 
-    <!-- 背景光晕（必须，否则亚克力效果不明显） -->
+    <!-- 背景光晕 -->
     <div class="bg-ornament bg-ornament-1"></div>
     <div class="bg-ornament bg-ornament-2"></div>
     <div class="bg-ornament bg-ornament-3"></div>
@@ -603,13 +600,13 @@
 
         <!-- 内容区域 -->
         <div class="main-content">
-            <!-- 作品展示面板 -->
+            <!-- 作品展示面板（已替换为您的聊天页面） -->
             <div class="content-panel active" id="panel-project">
                 <div class="card">
                     <div class="card-header">
                         <div>
-                            <h3>TurboWarp 实时聊天作品</h3>
-                            <span class="subtitle">云变量通信 · 多人同时聊天</span>
+                            <h3>实时聊天室</h3>
+                            <span class="subtitle">在线聊天 · 云变量通信</span>
                         </div>
                     </div>
                     <div class="card-body">
@@ -618,7 +615,7 @@
                                 id="twIframe"
                                 src="https://jiadan209.github.io/chat"
                                 allow="autoplay; camera; microphone"
-                                title="TurboWarp 实时作品"
+                                title="实时聊天作品"
                                 loading="lazy">
                             </iframe>
                         </div>
@@ -626,10 +623,9 @@
                 </div>
             </div>
 
-            <!-- 下载面板（两个相同卡片垂直排列） -->
+            <!-- 下载面板 -->
             <div class="content-panel" id="panel-download">
                 <div class="download-panel-content">
-                    <!-- 第一张卡片 -->
                     <div class="download-card-large">
                         <div class="dl-icon">📦</div>
                         <div class="dl-text">
@@ -643,7 +639,6 @@
                         </div>
                     </div>
 
-                    <!-- 第二张卡片 -->
                     <div class="download-card-large">
                         <div class="dl-icon">⚠️</div>
                         <div class="dl-text">
@@ -665,7 +660,6 @@
                 <div class="about-grid">
                     <div class="about-card">
                         <div class="icon-circle avatar-circle">
-                            <!-- 备用图标兜底 -->
                             <span class="fallback-icon">🧑</span>
                             <img
                                 src="https://i0.hdslb.com/bfs/face/44798c1b219efeaa62b587bdba19194a63f94581.jpg@128w_128h_1c_1s.webp"
@@ -702,22 +696,18 @@
 
     <script>
         (function() {
-            // Tab 切换
             const tabBtns = document.querySelectorAll('.tab-btn');
             const panels = document.querySelectorAll('.content-panel');
 
             tabBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
                     const tab = btn.dataset.tab;
-                    // 更新按钮状态
                     tabBtns.forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
-                    // 切换面板
                     panels.forEach(p => p.classList.remove('active'));
                     const target = document.getElementById('panel-' + tab);
                     if (target) {
                         target.classList.add('active');
-                        // 重置动画
                         target.style.animation = 'none';
                         target.offsetHeight;
                         target.style.animation = '';
@@ -725,7 +715,7 @@
                 });
             });
 
-            console.log('✅ TurboWarp 作品展示页已就绪 (亚克力Tab栏 · 双下载卡片)');
+            console.log('✅ 实时聊天作品展示页已就绪 (已链接您的聊天页面)');
         })();
     </script>
 </body>
