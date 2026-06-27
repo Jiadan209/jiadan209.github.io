@@ -118,7 +118,6 @@
             box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
         }
 
-        /* 亚克力纹理叠加 */
         .tab-nav::before {
             content: '';
             position: absolute;
@@ -246,12 +245,13 @@
             position: relative;
         }
 
-        /* ========== TurboWarp 面板 ========== */
+        /* ========== 作品展示面板（自适应窗口高度） ========== */
         .turbowarp-wrapper {
             position: relative;
             width: 100%;
-            aspect-ratio: 4/3;
-            max-height: 620px;
+            /* 动态计算高度：视口高度减去顶部Tab栏、卡片头部、外边距等（约180px） */
+            height: calc(100vh - 180px);
+            min-height: 400px; /* 最小高度保证可用性 */
             background: #1a1a2e;
             border-radius: 0 0 var(--radius-lg) var(--radius-lg);
             overflow: hidden;
@@ -295,22 +295,10 @@
             background: #e8f4fd;
             color: #0071e3;
         }
-        .icon-circle.blue {
-            background: #e8f4fd;
-            color: #0071e3;
-        }
-        .icon-circle.green {
-            background: #e8f8ed;
-            color: #34c759;
-        }
-        .icon-circle.purple {
-            background: #f3e8ff;
-            color: #af52de;
-        }
-        .icon-circle.orange {
-            background: #fff3e6;
-            color: #ff9500;
-        }
+        .icon-circle.blue { background: #e8f4fd; color: #0071e3; }
+        .icon-circle.green { background: #e8f8ed; color: #34c759; }
+        .icon-circle.purple { background: #f3e8ff; color: #af52de; }
+        .icon-circle.orange { background: #fff3e6; color: #ff9500; }
         .icon-circle.avatar-circle {
             background: transparent;
             padding: 0;
@@ -445,14 +433,13 @@
         }
         .btn-download-large:active {
             transform: scale(0.95);
-            transition: transform 0.1s ease;
         }
         .btn-download-large svg {
             width: 18px;
             height: 18px;
         }
 
-        /* ========== Toast 提示 ========== */
+        /* ========== Toast ========== */
         .toast {
             position: fixed;
             top: 24px;
@@ -479,8 +466,9 @@
         /* ========== 响应式 ========== */
         @media (max-width: 900px) {
             .turbowarp-wrapper {
-                aspect-ratio: 16/10;
-                max-height: 400px;
+                /* 小屏幕下适当减小上方预留空间 */
+                height: calc(100vh - 160px);
+                min-height: 350px;
             }
             .tab-btn {
                 padding: 10px 16px;
@@ -513,6 +501,10 @@
         @media (max-width: 500px) {
             .app-container {
                 padding: 0 10px;
+            }
+            .turbowarp-wrapper {
+                height: calc(100vh - 140px);
+                min-height: 300px;
             }
             .tab-nav-wrapper {
                 top: 10px;
@@ -565,23 +557,20 @@
 </head>
 <body>
 
-    <!-- 背景光晕 -->
     <div class="bg-ornament bg-ornament-1"></div>
     <div class="bg-ornament bg-ornament-2"></div>
     <div class="bg-ornament bg-ornament-3"></div>
 
-    <!-- Toast -->
     <div class="toast" id="toast"></div>
 
     <div class="app-container">
-        <!-- 亚克力 Tab 栏 -->
         <div class="tab-nav-wrapper">
             <nav class="tab-nav" id="tabNav">
                 <button class="tab-btn active" data-tab="project">
                     <span class="tab-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
                     </span>
-                    作品展示
+                    展示
                 </button>
                 <button class="tab-btn" data-tab="download">
                     <span class="tab-icon">
@@ -598,9 +587,8 @@
             </nav>
         </div>
 
-        <!-- 内容区域 -->
         <div class="main-content">
-            <!-- 作品展示面板（已替换为您的聊天页面） -->
+            <!-- 作品展示面板（自适应高度） -->
             <div class="content-panel active" id="panel-project">
                 <div class="card">
                     <div class="card-header">
@@ -638,7 +626,6 @@
                             </a>
                         </div>
                     </div>
-
                     <div class="download-card-large">
                         <div class="dl-icon">⚠️</div>
                         <div class="dl-text">
@@ -673,7 +660,6 @@
                         <h4>作者加蛋</h4>
                         <p>本项目由创作者精心制作并分享，感谢您的使用与支持。</p>
                     </div>
-
                     <div class="about-card">
                         <div class="icon-circle blue">☁️</div>
                         <h4>TurboWarp 实时聊天</h4>
@@ -714,8 +700,6 @@
                     }
                 });
             });
-
-            console.log('✅ 实时聊天作品展示页已就绪 (已链接您的聊天页面)');
         })();
     </script>
 </body>
