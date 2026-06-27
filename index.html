@@ -7,7 +7,6 @@
     <style>
         :root {
             --bg: #f5f5f7;
-            --bg-secondary: #fafafa;
             --card-bg: #ffffff;
             --text-primary: #1d1d1f;
             --text-secondary: #6e6e73;
@@ -15,7 +14,6 @@
             --border: rgba(0, 0, 0, 0.08);
             --border-light: rgba(0, 0, 0, 0.04);
             --accent: #0071e3;
-            --accent-light: #e8f4fd;
             --accent-hover: #0060c0;
             --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
             --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
@@ -24,11 +22,11 @@
             --acrylic-bg: rgba(255, 255, 255, 0.62);
             --acrylic-blur: blur(24px) saturate(180%);
             --acrylic-border: rgba(255, 255, 255, 0.5);
-            --acrylic-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
             --radius-sm: 10px;
             --radius: 16px;
             --radius-lg: 20px;
             --radius-xl: 24px;
+            --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -47,10 +45,9 @@
             -moz-osx-font-smoothing: grayscale;
             line-height: 1.5;
             overflow-x: hidden;
-            position: relative;
         }
 
-        /* 背景装饰光晕 - 衬托亚克力效果 */
+        /* ========== 背景装饰光晕 ========== */
         .bg-ornament {
             position: fixed;
             border-radius: 50%;
@@ -58,6 +55,8 @@
             pointer-events: none;
             z-index: 0;
             opacity: 0.45;
+            will-change: transform;
+            contain: layout style paint;
         }
         .bg-ornament-1 {
             width: 500px;
@@ -101,6 +100,7 @@
         }
 
         .tab-nav {
+            position: relative;
             display: inline-flex;
             align-items: center;
             gap: 6px;
@@ -110,14 +110,14 @@
             -webkit-backdrop-filter: var(--acrylic-blur);
             border: 1px solid var(--acrylic-border);
             border-radius: 50px;
-            box-shadow: var(--acrylic-shadow), 0 0 0 1px rgba(255, 255, 255, 0.4) inset;
-            transition: all var(--transition);
+            box-shadow: var(--shadow-md), 0 0 0 1px rgba(255, 255, 255, 0.4) inset;
+            transition: box-shadow var(--transition);
         }
-
         .tab-nav:hover {
             box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
         }
 
+        /* 亚克力光泽层 */
         .tab-nav::before {
             content: '';
             position: absolute;
@@ -129,6 +129,10 @@
                 radial-gradient(ellipse at 70% 80%, rgba(255, 255, 255, 0.15) 0%, transparent 50%);
             opacity: 0.7;
             z-index: 0;
+            transition: opacity var(--transition);
+        }
+        .tab-nav:hover::before {
+            opacity: 0.85;
         }
 
         .tab-btn {
@@ -145,24 +149,23 @@
             font-size: 15px;
             font-weight: 500;
             color: var(--text-secondary);
-            transition: all var(--transition);
+            transition:
+                color var(--transition),
+                background var(--transition),
+                transform 0.12s ease,
+                letter-spacing var(--transition);
             white-space: nowrap;
             letter-spacing: 0.01em;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
-            outline: none;
         }
-
         .tab-btn:hover {
             color: var(--text-primary);
             background: rgba(255, 255, 255, 0.55);
         }
-
         .tab-btn:active {
             transform: scale(0.96);
-            transition: transform 0.12s ease;
         }
-
         .tab-btn.active {
             background: #ffffff;
             color: var(--text-primary);
@@ -170,11 +173,19 @@
             box-shadow: var(--shadow-md), 0 0 0 0.5px rgba(0, 0, 0, 0.06);
             letter-spacing: 0;
         }
+        /* 可访问性：键盘焦点指示 */
+        .tab-btn:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
 
         .tab-icon {
             width: 18px;
             height: 18px;
             flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .tab-icon svg {
             width: 100%;
@@ -216,10 +227,9 @@
             border: 1px solid var(--border-light);
             box-shadow: var(--shadow-sm);
             overflow: hidden;
-            transition: all var(--transition);
+            transition: box-shadow var(--transition);
             height: 100%;
         }
-
         .card-header {
             padding: 18px 24px;
             border-bottom: 1px solid var(--border-light);
@@ -241,22 +251,19 @@
             font-weight: 400;
         }
         .card-body {
-            padding: 0;
             position: relative;
         }
 
-        /* ========== 作品展示面板（高度调小） ========== */
+        /* ========== 作品展示面板 ========== */
         .turbowarp-wrapper {
             position: relative;
             width: 100%;
-            /* 调整高度：原 calc(100vh - 180px) 改为 calc(100vh - 220px) */
             height: calc(100vh - 220px);
             min-height: 380px;
             background: #1a1a2e;
             border-radius: 0 0 var(--radius-lg) var(--radius-lg);
             overflow: hidden;
         }
-
         .turbowarp-wrapper iframe {
             width: 100%;
             height: 100%;
@@ -276,7 +283,9 @@
             border: 1px solid var(--border-light);
             padding: 24px;
             box-shadow: var(--shadow-sm);
-            transition: all var(--transition);
+            transition:
+                box-shadow var(--transition),
+                transform var(--transition);
         }
         .about-card:hover {
             box-shadow: var(--shadow-md);
@@ -292,13 +301,26 @@
             margin-bottom: 16px;
             font-size: 22px;
             overflow: hidden;
+            flex-shrink: 0;
+        }
+        /* 图标颜色变体 */
+        .icon-circle.blue {
             background: #e8f4fd;
             color: #0071e3;
         }
-        .icon-circle.blue { background: #e8f4fd; color: #0071e3; }
-        .icon-circle.green { background: #e8f8ed; color: #34c759; }
-        .icon-circle.purple { background: #f3e8ff; color: #af52de; }
-        .icon-circle.orange { background: #fff3e6; color: #ff9500; }
+        .icon-circle.green {
+            background: #e8f8ed;
+            color: #34c759;
+        }
+        .icon-circle.purple {
+            background: #f3e8ff;
+            color: #af52de;
+        }
+        .icon-circle.orange {
+            background: #fff3e6;
+            color: #ff9500;
+        }
+        /* 头像圆圈 */
         .icon-circle.avatar-circle {
             background: transparent;
             padding: 0;
@@ -325,7 +347,6 @@
             border-radius: 50%;
             z-index: 0;
         }
-
         .about-card h4 {
             font-size: 16px;
             font-weight: 600;
@@ -352,7 +373,10 @@
             border: 1px solid var(--border-light);
             padding: 40px 48px;
             box-shadow: var(--shadow-sm);
-            transition: all var(--transition);
+            transition:
+                box-shadow var(--transition),
+                transform var(--transition),
+                border-color var(--transition);
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -417,12 +441,16 @@
             font-weight: 600;
             font-family: inherit;
             letter-spacing: 0.01em;
-            transition: all var(--transition);
+            transition:
+                background var(--transition),
+                box-shadow var(--transition),
+                transform var(--transition);
             box-shadow: 0 4px 18px rgba(0, 113, 227, 0.3);
             text-decoration: none;
             margin-top: 8px;
             align-self: flex-start;
             white-space: nowrap;
+            will-change: transform;
         }
         .btn-download-large:hover {
             background: var(--accent-hover);
@@ -434,9 +462,14 @@
         .btn-download-large:active {
             transform: scale(0.95);
         }
+        .btn-download-large:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+        }
         .btn-download-large svg {
             width: 18px;
             height: 18px;
+            flex-shrink: 0;
         }
 
         /* ========== Toast ========== */
@@ -455,7 +488,7 @@
             box-shadow: var(--shadow-xl);
             pointer-events: none;
             opacity: 0;
-            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             letter-spacing: 0.01em;
         }
         .toast.show {
@@ -466,7 +499,7 @@
         /* ========== 响应式 ========== */
         @media (max-width: 900px) {
             .turbowarp-wrapper {
-                height: calc(100vh - 200px); /* 同步调小 */
+                height: calc(100vh - 200px);
                 min-height: 350px;
             }
             .tab-btn {
@@ -502,7 +535,7 @@
                 padding: 0 10px;
             }
             .turbowarp-wrapper {
-                height: calc(100vh - 170px); /* 小屏同样调小 */
+                height: calc(100vh - 170px);
                 min-height: 300px;
             }
             .tab-nav-wrapper {
@@ -556,29 +589,32 @@
 </head>
 <body>
 
-    <div class="bg-ornament bg-ornament-1"></div>
-    <div class="bg-ornament bg-ornament-2"></div>
-    <div class="bg-ornament bg-ornament-3"></div>
+    <!-- 背景装饰光晕 -->
+    <div class="bg-ornament bg-ornament-1" aria-hidden="true"></div>
+    <div class="bg-ornament bg-ornament-2" aria-hidden="true"></div>
+    <div class="bg-ornament bg-ornament-3" aria-hidden="true"></div>
 
-    <div class="toast" id="toast"></div>
+    <!-- Toast 提示 -->
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
     <div class="app-container">
+        <!-- Tab 导航 -->
         <div class="tab-nav-wrapper">
-            <nav class="tab-nav" id="tabNav">
-                <button class="tab-btn active" data-tab="project">
-                    <span class="tab-icon">
+            <nav class="tab-nav" id="tabNav" role="tablist" aria-label="页面导航">
+                <button class="tab-btn active" data-tab="project" role="tab" aria-selected="true" aria-controls="panel-project">
+                    <span class="tab-icon" aria-hidden="true">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
                     </span>
                     展示
                 </button>
-                <button class="tab-btn" data-tab="download">
-                    <span class="tab-icon">
+                <button class="tab-btn" data-tab="download" role="tab" aria-selected="false" aria-controls="panel-download">
+                    <span class="tab-icon" aria-hidden="true">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                     </span>
                     下载
                 </button>
-                <button class="tab-btn" data-tab="about">
-                    <span class="tab-icon">
+                <button class="tab-btn" data-tab="about" role="tab" aria-selected="false" aria-controls="panel-about">
+                    <span class="tab-icon" aria-hidden="true">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
                     </span>
                     关于
@@ -586,8 +622,10 @@
             </nav>
         </div>
 
+        <!-- 主内容区 -->
         <div class="main-content">
-            <div class="content-panel active" id="panel-project">
+            <!-- 作品展示面板 -->
+            <div class="content-panel active" id="panel-project" role="tabpanel" aria-labelledby="tabNav">
                 <div class="card">
                     <div class="card-header">
                         <div>
@@ -601,7 +639,7 @@
                                 id="twIframe"
                                 src="https://jiadan209.github.io/chat"
                                 allow="autoplay; camera; microphone"
-                                title="实时聊天作品"
+                                title="实时聊天作品展示"
                                 loading="lazy">
                             </iframe>
                         </div>
@@ -609,27 +647,38 @@
                 </div>
             </div>
 
-            <div class="content-panel" id="panel-download">
+            <!-- 下载面板 -->
+            <div class="content-panel" id="panel-download" role="tabpanel" aria-labelledby="tabNav">
                 <div class="download-panel-content">
+                    <!-- 下载卡片：源文件 -->
                     <div class="download-card-large">
-                        <div class="dl-icon">📦</div>
+                        <div class="dl-icon" aria-hidden="true">📦</div>
                         <div class="dl-text">
                             <h4>TurboWarp 源文件</h4>
                             <p class="dl-desc">下载 zip 格式的项目源文件，可在 TurboWarp 编辑器中打开编辑，自由修改与学习。（zip文件需要解压）</p>
                             <span class="dl-info">格式： sb3 · 兼容 TurboWarp</span>
-                            <a class="btn-download-large" href="https://wwaqw.lanzoue.com/iJfya3s289cd" download target="_blank" rel="noopener">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            <a class="btn-download-large"
+                               href="https://wwaqw.lanzoue.com/iJfya3s289cd"
+                               download
+                               target="_blank"
+                               rel="noopener noreferrer">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                                 下载 .zip
                             </a>
                         </div>
                     </div>
+                    <!-- 下载卡片：解压说明 -->
                     <div class="download-card-large">
-                        <div class="dl-icon">⚠️</div>
+                        <div class="dl-icon" aria-hidden="true">⚠️</div>
                         <div class="dl-text">
                             <h4>zip文件需要解压</h4>
                             <p class="dl-desc">不要问我为啥要解压和为啥不直接上传.sb3文件</p>
                             <span class="dl-info">不要问我为啥要解压和为啥不直接上传.sb3文件</span>
-                            <a class="btn-download-large" href="https://www.bilibili.com/video/BV1xZ4y1v7pU/?share_source=copy_web&vd_source=2e73609c9f073cc0f8bacb75fc9713d5" download target="_blank" rel="noopener">
+                            <a class="btn-download-large"
+                               href="https://www.bilibili.com/video/BV1xZ4y1v7pU/?share_source=copy_web&vd_source=2e73609c9f073cc0f8bacb75fc9713d5"
+                               target="_blank"
+                               rel="noopener noreferrer">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
                                 如何解压缩zip文件
                             </a>
                             <span class="dl-info">不是打广告</span>
@@ -638,14 +687,15 @@
                 </div>
             </div>
 
-            <div class="content-panel" id="panel-about">
+            <!-- 关于面板 -->
+            <div class="content-panel" id="panel-about" role="tabpanel" aria-labelledby="tabNav">
                 <div class="about-grid">
                     <div class="about-card">
                         <div class="icon-circle avatar-circle">
-                            <span class="fallback-icon">🧑</span>
+                            <span class="fallback-icon" aria-hidden="true">🧑</span>
                             <img
                                 src="https://i0.hdslb.com/bfs/face/44798c1b219efeaa62b587bdba19194a63f94581.jpg@128w_128h_1c_1s.webp"
-                                alt="作者头像"
+                                alt="作者加蛋头像"
                                 referrerpolicy="no-referrer"
                                 crossorigin="anonymous"
                                 loading="lazy"
@@ -656,17 +706,17 @@
                         <p>本项目由创作者精心制作并分享，感谢您的使用与支持。</p>
                     </div>
                     <div class="about-card">
-                        <div class="icon-circle blue">☁️</div>
+                        <div class="icon-circle blue" aria-hidden="true">☁️</div>
                         <h4>TurboWarp 实时聊天</h4>
                         <p>基于 TurboWarp 云变量技术构建的实时多人聊天作品。用户可以在作品内实时发送和接收数据，体验云变量的强大功能。</p>
                     </div>
                     <div class="about-card">
-                        <div class="icon-circle blue">☁️</div>
+                        <div class="icon-circle blue" aria-hidden="true">☁️</div>
                         <h4>云变量通信</h4>
                         <p>利用 TurboWarp 的云变量，实现低延迟的实时数据同步。支持多用户同时在线，消息即时送达。</p>
                     </div>
                     <div class="about-card">
-                        <div class="icon-circle purple">💡</div>
+                        <div class="icon-circle purple" aria-hidden="true">💡</div>
                         <h4>亚克力设计</h4>
                         <p>网站采用白色主题与亚克力磨砂玻璃 Tab 栏，营造出轻盈、现代的视觉感受，让作品展示更加突出。</p>
                     </div>
@@ -677,23 +727,62 @@
 
     <script>
         (function() {
-            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabNav = document.getElementById('tabNav');
+            const tabBtns = Array.from(tabNav.querySelectorAll('.tab-btn'));
             const panels = document.querySelectorAll('.content-panel');
 
-            tabBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const tab = btn.dataset.tab;
-                    tabBtns.forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    panels.forEach(p => p.classList.remove('active'));
-                    const target = document.getElementById('panel-' + tab);
-                    if (target) {
-                        target.classList.add('active');
-                        target.style.animation = 'none';
-                        target.offsetHeight;
-                        target.style.animation = '';
+            /**
+             * 切换到指定 tab
+             * @param {string} tabName - tab 名称
+             */
+            function switchTab(tabName) {
+                // 更新按钮状态
+                tabBtns.forEach(btn => {
+                    const isActive = btn.dataset.tab === tabName;
+                    btn.classList.toggle('active', isActive);
+                    btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+                });
+
+                // 更新面板显示
+                panels.forEach(panel => {
+                    const isTarget = panel.id === 'panel-' + tabName;
+                    panel.classList.toggle('active', isTarget);
+                    // 重启动画
+                    if (isTarget) {
+                        panel.style.animation = 'none';
+                        // 强制回流以重启动画
+                        void panel.offsetHeight;
+                        panel.style.animation = '';
                     }
                 });
+            }
+
+            // 点击切换
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    switchTab(btn.dataset.tab);
+                });
+            });
+
+            // 键盘导航：左右箭头切换 tab（符合 ARIA tabs 模式）
+            tabNav.addEventListener('keydown', (e) => {
+                const currentIndex = tabBtns.findIndex(btn => btn === document.activeElement);
+                if (currentIndex === -1) return;
+
+                let targetIndex = currentIndex;
+
+                if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    targetIndex = (currentIndex + 1) % tabBtns.length;
+                } else if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    targetIndex = (currentIndex - 1 + tabBtns.length) % tabBtns.length;
+                }
+
+                if (targetIndex !== currentIndex) {
+                    tabBtns[targetIndex].focus();
+                    switchTab(tabBtns[targetIndex].dataset.tab);
+                }
             });
         })();
     </script>
